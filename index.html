@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100d19">
+  <title>ECION VPN</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #100d19;
+      --panel: #1b1627;
+      --border: #352644;
+      --purple: #a855f7;
+      --red: #fb416b;
+      --text: #f8f5ff;
+      --muted: #aaa0ba;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at top, #28133e 0, transparent 50%),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    button, select, input { font: inherit; }
+
+    button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: white;
+      background: #30233f;
+    }
+
+    button:focus-visible, select:focus-visible,
+    input:focus-visible {
+      outline: 2px solid #d8b4fe;
+      outline-offset: 3px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 20px 6%;
+      border-bottom: 1px solid var(--border);
+      background: #100d19dd;
+    }
+
+    .brand {
+      font-size: 23px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .brand span { color: var(--purple); }
+
+    .badge {
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 12px;
+    }
+
+    main {
+      width: min(1000px, 90%);
+      margin: 42px auto;
+    }
+
+    .intro { margin-bottom: 25px; }
+
+    h1 {
+      font-size: clamp(30px, 5vw, 43px);
+      margin: 0 0 8px;
+    }
+
+    .gradient {
+      background: linear-gradient(90deg, #c084fc, #fb416b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .muted { color: var(--muted); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: #1b1627ee;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      min-width: 0;
+    }
+
+    .connection {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 35px 20px;
+    }
+
+    .orb {
+      width: 92px;
+      height: 92px;
+      display: grid;
+      place-items: center;
+      margin: 5px auto 20px;
+      border-radius: 50%;
+      background: #29183b;
+      border: 2px solid var(--purple);
+      box-shadow: 0 0 35px #a855f733;
+      font-size: 37px;
+    }
+
+    .orb.demo {
+      border-color: #fbbf24;
+      box-shadow: 0 0 25px #fbbf2422;
+    }
+
+    .orb.connected {
+      border-color: #4ade80;
+      box-shadow: 0 0 35px #4ade8033;
+    }
+
+    .connect-btn {
+      margin: 18px auto 12px;
+      display: block;
+      width: min(100%, 260px);
+      padding: 16px;
+      font-weight: 800;
+      font-size: 16px;
+      background: linear-gradient(100deg, #9333ea, #e63c75);
+    }
+
+    .connect-btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .notice {
+      border: 1px solid #70551d;
+      background: #332714;
+      color: #ffe2a0;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-top: 18px;
+    }
+
+    select, input {
+      width: 100%;
+      margin: 10px 0 15px;
+      padding: 12px;
+      color: var(--text);
+      background: #110e19;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    label { font-size: 14px; }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin: 13px 0;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #fbbf24;
+      margin-right: 7px;
+    }
+
+    .status-dot.good { background: #4ade80; }
+
+    .auth-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .primary { background: var(--purple); }
+    .danger { background: #512036; }
+
+    #authStatus, #message {
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 15px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 650px) {
+      .grid { grid-template-columns: 1fr; }
+      .connection { grid-column: auto; }
+      .topbar { padding: 17px 5%; }
+      main { margin-top: 28px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">ECION<span> VPN</span></div>
+    <div class="badge">ECION CO. · PRIVACY PROJECT</div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h1>Your connection.<br><span class="gradient">Your privacy.</span></h1>
+      <p class="muted">
+        The next step toward a privacy-focused internet.
+      </p>
+    </section>
+
+    <div class="grid">
+      <section class="card connection">
+        <div class="orb demo" id="orb">🔒</div>
+        <h2 id="connectionTitle">Dashboard demo</h2>
+        <p class="muted" id="connectionDescription">
+          No VPN tunnel is connected.
+        </p>
+
+        <button class="connect-btn" id="connectBtn">
+          Try Demo Connection
+        </button>
+
+        <div>
+          <span class="status-dot" id="statusDot"></span>
+          <span id="statusText">VPN engine not connected</span>
+        </div>
+
+        <div class="notice">
+          DEMO MODE: This website does not currently encrypt or route
+          your internet traffic through a VPN. The demo button only
+          changes the dashboard display.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>🌍 Server selection</h2>
+        <p class="muted">Choose a planned server location.</p>
+
+        <label for="server">Preferred location</label>
+        <select id="server">
+          <option value="us">United States — Planned</option>
+          <option value="nl">Netherlands — Planned</option>
+          <option value="de">Germany — Planned</option>
+          <option value="uk">United Kingdom — Planned</option>
+        </select>
+
+        <div class="row">
+          <span class="muted">Selected server</span>
+          <strong id="serverName">United States</strong>
+        </div>
+
+        <p class="muted" id="serverNote">
+          These are planned locations, not live servers.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>🛡️ Privacy status</h2>
+
+        <div class="row">
+          <span>Encrypted tunnel</span>
+          <span class="muted">Not connected</span>
+        </div>
+
+        <div class="row">
+          <span>DNS leak protection</span>
+          <span class="muted">Not tested</span>
+        </div>
+
+        <div class="row">
+          <span>Kill switch</span>
+          <span class="muted">Not implemented</span>
+        </div>
+
+        <div class="row">
+          <span>Activity logging</span>
+          <span class="muted">Policy not finalized</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>👤 ECION account</h2>
+        <p class="muted" id="authStatus">
+          Supabase is not configured.
+        </p>
+
+        <label for="email">Email</label>
+        <input id="email" type="email"
+               placeholder="you@example.com"
+               autocomplete="email">
+
+        <label for="password">Password</label>
+        <input id="password" type="password"
+               placeholder="At least 8 characters"
+               autocomplete="current-password">
+
+        <div class="auth-actions">
+          <button class="primary" id="signUpBtn">Sign up</button>
+          <button id="signInBtn">Sign in</button>
+          <button class="danger" id="signOutBtn" hidden>Sign out</button>
+        </div>
+
+        <p id="message" class="muted" aria-live="polite"></p>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    ECION VPN · An Ecion Co. project<br>
+    Privacy is a goal. Security claims require testing.
+  </footer>
+
+  <script type="module">
+    import { createClient } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    // Replace these with your Supabase project's public URL
+    // and publishable key. Never put a service-role key here.
+    const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+    const SUPABASE_PUBLISHABLE_KEY =
+      "YOUR_SUPABASE_PUBLISHABLE_KEY";
+
+    let db = null;
+
+    const $ = id => document.getElementById(id);
+
+    const servers = {
+      us: "United States",
+      nl: "Netherlands",
+      de: "Germany",
+      uk: "United Kingdom"
+    };
+
+    $("server").addEventListener("change", () => {
+      $("serverName").textContent =
+        servers[$("server").value];
+    });
+
+    // This is intentionally only a visual demo.
+    // It does NOT connect to a VPN server.
+    let demoConnected = false;
+
+    $("connectBtn").addEventListener("click", () => {
+      demoConnected = !demoConnected;
+
+      $("orb").classList.toggle("connected", demoConnected);
+      $("orb").classList.toggle("demo", !demoConnected);
+      $("orb").textContent = demoConnected ? "✓" : "🔒";
+
+      $("connectionTitle").textContent =
+        demoConnected ? "Demo enabled" : "Dashboard demo";
+
+      $("connectionDescription").textContent =
+        demoConnected
+          ? "Only the dashboard state changed."
+          : "No VPN tunnel is connected.";
+
+      $("connectBtn").textContent =
+        demoConnected ? "Reset Demo" : "Try Demo Connection";
+
+      $("statusText").textContent =
+        demoConnected
+          ? "DEMO ONLY — No traffic protection"
+          : "VPN engine not connected";
+
+      $("statusDot").classList.toggle("good", false);
+    });
+
+    function showMessage(text) {
+      $("message").textContent = text;
+    }
+
+    function setAuthState(user) {
+      $("authStatus").textContent = user
+        ? "Signed in as " + user.email
+        : "Not signed in";
+
+      $("signOutBtn").hidden = !user;
+      $("signInBtn").hidden = !!user;
+      $("signUpBtn").hidden = !!user;
+    }
+
+    if (
+      SUPABASE_URL.startsWith("https://") &&
+      !SUPABASE_URL.includes("YOUR_SUPABASE") &&
+      SUPABASE_PUBLISHABLE_KEY &&
+      !SUPABASE_PUBLISHABLE_KEY.includes("YOUR_SUPABASE")
+    ) {
+      try {
+        db = createClient(
+          SUPABASE_URL,
+          SUPABASE_PUBLISHABLE_KEY
+        );
+
+        const { data, error } = await db.auth.getSession();
+
+        if (error) throw error;
+
+        setAuthState(data.session?.user ?? null);
+
+        db.auth.onAuthStateChange((_event, session) => {
+          setAuthState(session?.user ?? null);
+        });
+      } catch (error) {
+        $("authStatus").textContent =
+          "Supabase initialization failed.";
+        showMessage(error.message);
+      }
+    } else {
+      $("authStatus").textContent =
+        "Add your Supabase project settings to enable accounts.";
+    }
+
+    $("signUpBtn").addEventListener("click", async () => {
+      if (!db) {
+        showMessage("Configure Supabase first.");
+        return;
+      }
+
+      const email = $("email").value.trim();
+      const password = $("password").value;
+
+      if (!email || password.length < 8) {
+        showMessage("Enter a valid email and password of at least 8 characters.");
+        return;
+      }
+
+      $("signUpBtn").disabled = true;
+
+      try {
+        const { data, error } = await db.auth.signUp({
+          email,
+          password
+        });
+
+        if (error) throw error;
+
+        showMessage(
+          data.session
+            ? "Account created successfully."
+            : "Check your email for the confirmation link."
+        );
+      } catch (error) {
+        showMessage(error.message);
+      } finally {
+        $("signUpBtn").disabled = false;
+      }
+    });
+
+    $("signInBtn").addEventListener("click", async () => {
+      if (!db) {
+        showMessage("Configure Supabase first.");
+        return;
+      }
+
+      try {
+        const { error } = await db.auth.signInWithPassword({
+          email: $("email").value.trim(),
+          password: $("password").value
+        });
+
+        if (error) throw error;
+
+        showMessage("Sign-in request completed.");
+      } catch (error) {
+        showMessage(error.message);
+      }
+    });
+
+    $("signOutBtn").addEventListener("click", async () => {
+      if (!db) return;
+
+      const { error } = await db.auth.signOut();
+
+      showMessage(error ? error.message : "Signed out.");
+    });
+  </script>
+</body>
+</html>

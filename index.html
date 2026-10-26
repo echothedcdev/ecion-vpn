@@ -3,707 +3,316 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#100d19">
+  <meta name="theme-color" content="#0b0812">
+  <meta name="description" content="ECION VPN — a privacy-focused project from Ecion Co.">
   <title>ECION VPN | Ecion Co.</title>
-
   <style>
-    :root {
-      color-scheme: dark;
-      --bg: #100d19;
-      --panel: #1b1627;
-      --border: #392849;
-      --purple: #a855f7;
-      --red: #fb416b;
-      --text: #f8f5ff;
-      --muted: #aaa0ba;
-      --green: #4ade80;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      color: var(--text);
-      font-family: system-ui, Arial, sans-serif;
-      background:
-        radial-gradient(ellipse at top, #29133e 0, transparent 48%),
-        var(--bg);
-    }
-
-    button, input, select { font: inherit; }
-
-    button {
-      cursor: pointer;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 11px 15px;
-      background: #30233f;
-      color: white;
-      transition: filter .15s, transform .15s;
-    }
-
-    button:hover { filter: brightness(1.2); }
-    button:active { transform: scale(.98); }
-
-    button:disabled {
-      opacity: .55;
-      cursor: not-allowed;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0 15px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #110e19;
-      color: var(--text);
-    }
-
-    input:focus-visible, select:focus-visible,
-    button:focus-visible {
-      outline: 2px solid #d8b4fe;
-      outline-offset: 3px;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      padding: 20px 6%;
-      border-bottom: 1px solid var(--border);
-      background: #100d19dd;
-    }
-
-    .brand {
-      font-weight: 900;
-      font-size: 23px;
-      letter-spacing: 2px;
-    }
-
-    .brand span { color: var(--purple); }
-
-    .badge {
-      font-size: 12px;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      border-radius: 99px;
-      padding: 7px 11px;
-    }
-
-    main {
-      width: min(1000px, 90%);
-      margin: 40px auto;
-    }
-
-    h1 {
-      font-size: clamp(32px, 5vw, 45px);
-      margin: 0 0 8px;
-    }
-
-    h2 { margin-top: 0; }
-
-    .gradient {
-      color: #c084fc;
-      background: linear-gradient(90deg, #c084fc, #fb416b);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .muted { color: var(--muted); }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-      margin-top: 28px;
-    }
-
-    .card {
-      min-width: 0;
-      padding: 24px;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      background: #1b1627ee;
-    }
-
-    .connection {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 34px 20px;
-    }
-
-    .orb {
-      width: 90px;
-      height: 90px;
-      display: grid;
-      place-items: center;
-      margin: 5px auto 18px;
-      font-size: 36px;
-      border-radius: 50%;
-      border: 2px solid #fbbf24;
-      background: #29183b;
-      box-shadow: 0 0 30px #a855f722;
-    }
-
-    .orb.demo-active {
-      border-color: var(--green);
-      box-shadow: 0 0 30px #4ade8033;
-    }
-
-    .connect-btn {
-      display: block;
-      width: min(100%, 270px);
-      margin: 20px auto 14px;
-      padding: 15px;
-      font-weight: 800;
-      background: linear-gradient(100deg, #9333ea, #e63c75);
-      border: none;
-    }
-
-    .notice {
-      margin-top: 18px;
-      padding: 13px;
-      border: 1px solid #70551d;
-      border-radius: 10px;
-      background: #332714;
-      color: #ffe2a0;
-      font-size: 13px;
-      line-height: 1.6;
-      text-align: left;
-    }
-
-    .row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin: 14px 0;
-    }
-
-    .row span:last-child {
-      text-align: right;
-    }
-
-    .dot {
-      display: inline-block;
-      width: 9px;
-      height: 9px;
-      margin-right: 7px;
-      border-radius: 50%;
-      background: #fbbf24;
-    }
-
-    .dot.good { background: var(--green); }
-
-    .auth-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px;
-    }
-
-    .primary { background: var(--purple); }
-    .danger { background: #512036; }
-
-    .checkbox-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 8px 0 18px;
-    }
-
-    .checkbox-row input {
-      width: auto;
-      margin: 0;
-      accent-color: var(--purple);
-    }
-
-    .small {
-      font-size: 12px;
-      line-height: 1.6;
-    }
-
-    #message, #authStatus {
-      font-size: 13px;
-      line-height: 1.6;
-      overflow-wrap: anywhere;
-    }
-
-    footer {
-      padding: 28px 15px;
-      color: var(--muted);
-      text-align: center;
-      font-size: 12px;
-      line-height: 1.8;
-    }
-
-    @media (max-width: 650px) {
-      .grid { grid-template-columns: 1fr; }
-      .connection { grid-column: auto; }
-      .topbar { padding: 17px 5%; }
-      main { margin-top: 28px; }
-      .badge { font-size: 10px; }
-    }
+    :root{color-scheme:dark;--bg:#0b0812;--panel:#14101e;--panel2:#1b1428;--line:#30213f;--purple:#b66cff;--pink:#ff527f;--text:#f8f4ff;--muted:#a99db9;--green:#66e6a5;--amber:#ffd27b}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 45% -15%,#48205d 0,transparent 42%),radial-gradient(ellipse at 100% 50%,#35122633 0,transparent 40%),var(--bg);color:var(--text);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,input,select{font:inherit}button{cursor:pointer;color:var(--text);border:1px solid var(--line);border-radius:12px;background:#21182f;padding:11px 15px;transition:transform .15s,border-color .15s,filter .15s}button:hover{border-color:#8352a9;filter:brightness(1.1)}button:active{transform:scale(.985)}button:disabled{opacity:.5;cursor:not-allowed}
+    input,select{width:100%;background:#0e0a16;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:12px;margin:7px 0 15px;outline:none}input:focus,select:focus{border-color:var(--purple);box-shadow:0 0 0 3px #b66cff22}
+    a{color:#d5a9ff;text-decoration:none}a:hover{text-decoration:underline}.muted{color:var(--muted)}.small{font-size:12px;line-height:1.65}
+    .layout{min-height:100vh}.sidebar{position:fixed;inset:0 auto 0 0;width:235px;padding:25px 17px;background:#0e0a16eF;border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:5}
+    .brand{display:flex;align-items:center;gap:11px;padding:0 9px 27px;font-size:19px;font-weight:900;letter-spacing:2px}.brandmark{width:35px;height:35px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,var(--purple),var(--pink));color:white;box-shadow:0 6px 22px #b66cff33;font-size:18px}.brand span{color:var(--purple)}
+    .nav-label{padding:9px 11px;color:#776b88;font-size:10px;letter-spacing:1.7px;font-weight:800}.nav-item{display:flex;align-items:center;gap:12px;padding:11px 13px;margin:3px 0;border-radius:11px;color:#b8acc8;font-size:13px}.nav-item.active{background:#a855f71b;color:#e6ccff;border:1px solid #a855f72e}.nav-icon{width:19px;text-align:center;font-size:16px}.side-bottom{margin-top:auto}.privacy-chip{border:1px solid var(--line);background:#171020;border-radius:13px;padding:13px;margin:12px 4px}.privacy-chip strong{display:block;font-size:12px;margin:5px 0}.privacy-chip p{margin:0;font-size:11px;color:var(--muted)}
+    .main{margin-left:235px;padding:0 34px 35px;max-width:1600px}.topbar{height:79px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid #ffffff0d}.crumb{font-size:12px;color:var(--muted)}.crumb b{color:var(--text);font-weight:600}.top-actions{display:flex;align-items:center;gap:12px}.status-pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:99px;padding:7px 11px;color:#c2b5d1;font-size:11px;background:#15101e}.live-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 9px #ffd27b77}.avatar{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;font-weight:800;background:linear-gradient(135deg,#6631a0,#d74772);font-size:12px}
+    .welcome{display:flex;justify-content:space-between;align-items:flex-end;gap:22px;padding:32px 0 24px}.eyebrow{color:#c58cff;text-transform:uppercase;letter-spacing:2px;font-size:10px;font-weight:800}.welcome h1{font-size:clamp(27px,3vw,38px);line-height:1.14;letter-spacing:-1px;margin:8px 0}.gradient{background:linear-gradient(95deg,#d5a1ff,#ff7d9b);-webkit-background-clip:text;background-clip:text;color:transparent}.welcome p{margin:0;color:var(--muted);font-size:13px}.date-label{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:9px 12px;border-radius:10px;white-space:nowrap}
+    .grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(270px,.9fr);gap:18px}.card{min-width:0;border:1px solid var(--line);background:linear-gradient(145deg,#191224f5,#110d19f5);border-radius:18px;padding:22px;box-shadow:0 12px 35px #00000012}.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}.card h2{font-size:15px;margin:0;letter-spacing:-.2px}.card-sub{font-size:11px;color:var(--muted);margin:5px 0 0}.tiny-badge{font-size:10px;border:1px solid #5c3a74;border-radius:99px;padding:5px 8px;color:#d9b6ff;white-space:nowrap}
+    .hero-card{position:relative;overflow:hidden;min-height:355px;background:radial-gradient(ellipse at 50% 15%,#7228a333,transparent 45%),linear-gradient(145deg,#1d142a,#110d19)}.hero-card:after{content:"";position:absolute;width:260px;height:260px;border:1px solid #b66cff12;border-radius:50%;top:70px;left:50%;transform:translateX(-50%);box-shadow:0 0 0 27px #b66cff08,0 0 0 55px #b66cff05;pointer-events:none}.hero-inner{position:relative;z-index:1;text-align:center}.lock-orb{height:94px;width:94px;border-radius:50%;display:grid;place-items:center;margin:16px auto 13px;font-size:34px;background:radial-gradient(circle at 30% 20%,#3e2658,#191123 70%);border:1px solid #8753b7;box-shadow:0 0 0 8px #a855f70c,0 0 42px #a855f729}.lock-orb.demo-active{border-color:var(--green);box-shadow:0 0 0 8px #66e6a50c,0 0 42px #66e6a522}.hero-inner h2{font-size:23px;margin:6px 0}.hero-inner p{font-size:12px;color:var(--muted);margin:0}.connect-btn{min-width:200px;margin:22px 0 15px;background:linear-gradient(100deg,#8c3fe0,#db3c7a);border:0;padding:13px 20px;font-weight:800;box-shadow:0 8px 25px #a855f72c}.connection-state{display:flex;justify-content:center;align-items:center;gap:8px;color:#c8bdD5;font-size:11px}.state-dot{width:7px;height:7px;border-radius:50%;background:var(--amber)}.demo-note{margin:23px auto 0;max-width:470px;text-align:left;border:1px solid #6b5127;background:#2c2115;border-radius:11px;padding:11px 13px;font-size:11px;color:#f4dca9;line-height:1.6}.demo-note strong{color:#ffe7a9;letter-spacing:.7px}
+    .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}.metric{border:1px solid var(--line);background:#130e1b;border-radius:14px;padding:14px}.metric-label{font-size:10px;color:var(--muted)}.metric-value{font-size:18px;font-weight:800;margin:7px 0 1px}.metric-foot{font-size:10px;color:#8e819f}
+    .side-stack{display:grid;gap:18px;align-content:start}.field-label{font-size:11px;color:#d7cde3;font-weight:650}.region-select{margin-bottom:12px}.region-meta{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted);margin:0 0 14px}.save-btn{width:100%;background:#a855f7;color:white;border:0;font-weight:750}.checkbox-line{display:flex;gap:10px;align-items:flex-start;margin:15px 0 4px}.checkbox-line input{width:16px;height:16px;accent-color:var(--purple);margin:3px 0 0}.checkbox-line label{font-size:11px;color:#ddd2e9}.checkbox-line label span{display:block;color:var(--muted);margin-top:3px}
+    .auth-form label{font-size:11px;color:#d7cde3}.auth-actions{display:flex;gap:9px}.auth-actions button{flex:1}.primary{background:linear-gradient(100deg,#8b43d8,#a855f7);border:0;font-weight:750}.danger{background:#371927;border-color:#653044}.auth-status{overflow-wrap:anywhere;font-size:11px;color:var(--muted);margin:0 0 14px}.msg{font-size:11px;color:#d8c4ea;overflow-wrap:anywhere;margin:12px 0 0}.security-list{display:grid;gap:14px}.security-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11px}.security-row span:first-child{color:#c8bdd6}.security-value{color:var(--muted);text-align:right}.security-value.pending{color:var(--amber)}.security-value.ok{color:var(--green)}.security-foot{margin-top:17px;border-top:1px solid var(--line);padding-top:13px;color:var(--muted);font-size:10px}
+    .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.mini-stat{display:flex;align-items:center;gap:12px}.mini-icon{width:39px;height:39px;display:grid;place-items:center;border-radius:12px;background:#a855f719;border:1px solid #a855f72a;font-size:17px}.mini-stat strong{display:block;font-size:12px}.mini-stat span{font-size:10px;color:var(--muted)}.footer{padding:28px 0 0;text-align:center;color:#786c89;font-size:10px;line-height:1.8}
+    [hidden]{display:none!important}
+    @media(max-width:1050px){.sidebar{width:190px}.main{margin-left:190px;padding:0 22px 30px}.grid{grid-template-columns:1fr}.side-stack{grid-template-columns:repeat(2,minmax(0,1fr))}.side-stack .card:last-child{grid-column:1/-1}}
+    @media(max-width:700px){.sidebar{position:static;width:auto;height:auto;padding:13px 16px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:0}.nav-label,.nav-item,.privacy-chip{display:none}.side-bottom{display:none}.main{margin:0;padding:0 15px 25px}.topbar{height:60px}.welcome{padding:25px 0 19px;align-items:flex-start;flex-direction:column}.date-label{display:none}.side-stack,.bottom-grid{grid-template-columns:1fr}.side-stack .card:last-child{grid-column:auto}.metrics{gap:8px}.metric{padding:11px}.metric-value{font-size:16px}.card{padding:18px}.hero-card{min-height:345px}.status-pill{font-size:10px}.top-actions{gap:7px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
   </style>
 </head>
-
 <body>
-  <header class="topbar">
-    <div class="brand">ECION<span> VPN</span></div>
-    <div class="badge">ECION CO. · PRIVACY PROJECT</div>
-  </header>
+  <div class="layout">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="brand"><div class="brandmark">E</div><div>ECION<span> VPN</span></div></div>
+      <div class="nav-label">WORKSPACE</div>
+      <a class="nav-item active" href="#overview"><span class="nav-icon">◈</span> Overview</a>
+      <a class="nav-item" href="#preferences"><span class="nav-icon">◎</span> Server preferences</a>
+      <a class="nav-item" href="#account"><span class="nav-icon">♙</span> Account security</a>
+      <div class="nav-label" style="margin-top:19px">ECION CO.</div>
+      <div class="nav-item"><span class="nav-icon">✧</span> Privacy center</div>
+      <div class="side-bottom">
+        <div class="privacy-chip"><span style="color:var(--green)">●</span><strong>Privacy-first by design</strong><p>Clear status. No pretend protection.</p></div>
+        <div class="small muted" style="padding:10px">ECION VPN · Preview build</div>
+      </div>
+    </aside>
 
-  <main>
-    <section>
-      <h1>Your connection.<br><span class="gradient">Your privacy.</span></h1>
-      <p class="muted">
-        A privacy-focused project from Ecion Co.
-      </p>
-    </section>
+    <main class="main" id="overview">
+      <header class="topbar">
+        <div class="crumb">Workspace <span style="padding:0 7px;color:#5d506b">/</span> <b>Overview</b></div>
+        <div class="top-actions"><div class="status-pill"><span class="live-dot"></span> Preview mode</div><div class="avatar">E</div></div>
+      </header>
 
-    <div class="grid">
-      <!-- Connection demo -->
-      <section class="card connection">
-        <div class="orb" id="orb">🔒</div>
+      <section class="welcome">
+        <div><div class="eyebrow">ECION CO. / PRIVACY PROJECT</div><h1>Welcome to <span class="gradient">your privacy hub.</span></h1><p>Manage your preferences and keep track of your ECION VPN setup.</p></div>
+        <div class="date-label">✦ &nbsp; YOUR DASHBOARD</div>
+      </section>
 
-        <h2 id="connectionTitle">ECION VPN</h2>
-        <p class="muted" id="connectionDescription">
-          Your dashboard is ready.
-        </p>
-
-        <button class="connect-btn" id="connectBtn">
-          Start Demo
-        </button>
-
+      <div class="grid">
         <div>
-          <span class="dot" id="statusDot"></span>
-          <span id="statusText">VPN engine not connected</span>
-        </div>
+          <section class="card hero-card">
+            <div class="card-head"><div><h2>Connection overview</h2><p class="card-sub">Your current protection status</p></div><span class="tiny-badge">DEMO BUILD</span></div>
+            <div class="hero-inner">
+              <div class="lock-orb" id="orb">🔒</div>
+              <h2 id="connectionTitle">ECION is ready</h2>
+              <p id="connectionDescription">Your dashboard is ready to configure.</p>
+              <button class="connect-btn" id="connectBtn">Run dashboard demo &nbsp; ↗</button>
+              <div class="connection-state"><span class="state-dot" id="statusDot"></span><span id="statusText">VPN engine not connected</span></div>
+            </div>
+            <div class="demo-note"><strong>⚠ DEMO MODE</strong><br>This control only changes the dashboard display. No VPN tunnel is active and your internet traffic is not routed through an ECION server.</div>
+          </section>
 
-        <div class="notice">
-          <strong>DEMO MODE</strong><br>
-          This button changes the dashboard display only.
-          No VPN tunnel is established, and your internet
-          traffic is not being routed through an ECION server.
-        </div>
-      </section>
-
-      <!-- Server preferences -->
-      <section class="card">
-        <h2>🌍 Server preferences</h2>
-        <p class="muted">
-          Choose the region you would prefer when a real
-          VPN service becomes available.
-        </p>
-
-        <label for="server">Preferred region</label>
-        <select id="server">
-          <option value="us">United States</option>
-          <option value="nl">Netherlands</option>
-          <option value="de">Germany</option>
-          <option value="uk">United Kingdom</option>
-        </select>
-
-        <div class="row">
-          <span class="muted">Selected region</span>
-          <strong id="serverName">United States</strong>
-        </div>
-
-        <button class="primary" id="savePreferences">
-          Save Preferences
-        </button>
-
-        <p class="small muted" id="preferenceStatus" aria-live="polite">
-          Sign in to save your preferences to Supabase.
-        </p>
-
-        <div class="checkbox-row">
-          <input type="checkbox" id="autoConnect">
-          <label for="autoConnect">Remember auto-connect preference</label>
-        </div>
-
-        <p class="small muted">
-          Auto-connect is a saved preference only. It does
-          not automatically start a VPN connection.
-        </p>
-      </section>
-
-      <!-- Account -->
-      <section class="card">
-        <h2>👤 ECION account</h2>
-
-        <p class="muted" id="authStatus" aria-live="polite">
-          Connecting to Supabase...
-        </p>
-
-        <div id="authForm">
-          <label for="email">Email address</label>
-          <input id="email" type="email"
-                 placeholder="you@example.com"
-                 autocomplete="email">
-
-          <label for="password">Password</label>
-          <input id="password" type="password"
-                 placeholder="At least 8 characters"
-                 autocomplete="current-password">
-
-          <div class="auth-actions">
-            <button class="primary" id="signUpBtn">Sign up</button>
-            <button id="signInBtn">Sign in</button>
+          <div class="metrics">
+            <div class="metric"><div class="metric-label">VPN ENGINE</div><div class="metric-value">Offline</div><div class="metric-foot">Not configured yet</div></div>
+            <div class="metric"><div class="metric-label">PREFERRED REGION</div><div class="metric-value" id="metricRegion">US</div><div class="metric-foot">Your saved choice</div></div>
+            <div class="metric"><div class="metric-label">ACCOUNT</div><div class="metric-value" id="metricAccount">Guest</div><div class="metric-foot">Supabase auth</div></div>
           </div>
         </div>
 
-        <button class="danger" id="signOutBtn" hidden>
-          Sign out
-        </button>
+        <div class="side-stack">
+          <section class="card" id="preferences">
+            <div class="card-head"><div><h2>🌍 Server preferences</h2><p class="card-sub">Choose a preferred region</p></div><span class="tiny-badge">SETTINGS</span></div>
+            <label class="field-label" for="server">Preferred region</label>
+            <select class="region-select" id="server">
+              <option value="us">🇺🇸 &nbsp; United States</option>
+              <option value="nl">🇳🇱 &nbsp; Netherlands</option>
+              <option value="de">🇩🇪 &nbsp; Germany</option>
+              <option value="uk">🇬🇧 &nbsp; United Kingdom</option>
+            </select>
+            <div class="region-meta"><span>Selected region</span><strong id="serverName" style="color:var(--text)">United States</strong></div>
+            <button class="save-btn" id="savePreferences">Save preferences &nbsp; →</button>
+            <p class="msg" id="preferenceStatus" aria-live="polite">Sign in to save preferences to Supabase.</p>
+            <div class="checkbox-line"><input type="checkbox" id="autoConnect"><label for="autoConnect">Remember auto-connect preference<span>This is saved as a preference only. It does not start a VPN.</span></label></div>
+          </section>
 
-        <p id="message" class="muted" aria-live="polite"></p>
-      </section>
-
-      <!-- Privacy information -->
-      <section class="card">
-        <h2>🛡️ Privacy status</h2>
-
-        <div class="row">
-          <span>Supabase accounts</span>
-          <span id="accountStatus">Checking...</span>
+          <section class="card" id="account">
+            <div class="card-head"><div><h2>👤 ECION account</h2><p class="card-sub">Your dashboard identity</p></div><span class="tiny-badge">ACCOUNT</span></div>
+            <p class="auth-status" id="authStatus" aria-live="polite">Connecting to Supabase...</p>
+            <div id="authForm" class="auth-form">
+              <label for="email">Email address</label>
+              <input id="email" type="email" placeholder="you@example.com" autocomplete="email">
+              <label for="password">Password</label>
+              <input id="password" type="password" placeholder="At least 8 characters" autocomplete="current-password">
+              <div class="auth-actions"><button class="primary" id="signUpBtn">Create account</button><button id="signInBtn">Sign in</button></div>
+            </div>
+            <button class="danger" id="signOutBtn" hidden>Sign out</button>
+            <p class="msg" id="message" aria-live="polite"></p>
+          </section>
         </div>
+      </div>
 
-        <div class="row">
-          <span>Saved preferences</span>
-          <span id="savedStatus">Not loaded</span>
-        </div>
+      <div class="bottom-grid">
+        <section class="card">
+          <div class="card-head"><div><h2>🛡 Privacy & security status</h2><p class="card-sub">Honest status of the current build</p></div><span class="tiny-badge">CHECKLIST</span></div>
+          <div class="security-list">
+            <div class="security-row"><span>Supabase account</span><span class="security-value pending" id="accountStatus">Checking…</span></div>
+            <div class="security-row"><span>Saved preferences</span><span class="security-value" id="savedStatus">Not loaded</span></div>
+            <div class="security-row"><span>Encrypted VPN tunnel</span><span class="security-value pending">Not connected</span></div>
+            <div class="security-row"><span>DNS leak protection</span><span class="security-value">Not tested</span></div>
+            <div class="security-row"><span>Kill switch</span><span class="security-value">Not implemented</span></div>
+          </div>
+          <div class="security-foot">Protection features will only be marked active after implementation and testing.</div>
+        </section>
+        <section class="card">
+          <div class="card-head"><div><h2>✨ Project status</h2><p class="card-sub">What this preview can do</p></div><span class="tiny-badge">PREVIEW</span></div>
+          <div class="security-list">
+            <div class="mini-stat"><div class="mini-icon">🔑</div><div><strong>Account sign-in</strong><span>Powered by Supabase Auth</span></div></div>
+            <div class="mini-stat"><div class="mini-icon">💾</div><div><strong>Personal preferences</strong><span>Saved to your account</span></div></div>
+            <div class="mini-stat"><div class="mini-icon">🔌</div><div><strong>Real VPN connection</strong><span>WireGuard integration still needed</span></div></div>
+          </div>
+        </section>
+      </div>
 
-        <div class="row">
-          <span>Encrypted VPN tunnel</span>
-          <span>Not connected</span>
-        </div>
-
-        <div class="row">
-          <span>DNS leak protection</span>
-          <span>Not tested</span>
-        </div>
-
-        <div class="row">
-          <span>Kill switch</span>
-          <span>Not implemented</span>
-        </div>
-
-        <p class="small muted">
-          We will only describe protections as active after
-          they have been implemented and tested.
-        </p>
-      </section>
-    </div>
-  </main>
-
-  <footer>
-    ECION VPN · An Ecion Co. project<br>
-    Account and preference storage powered by Supabase.<br>
-    Dashboard demo — not a functioning VPN service.
-  </footer>
+      <footer class="footer">ECION VPN · An Ecion Co. project<br>Account and preference storage powered by Supabase · Dashboard preview, not a functioning VPN service.</footer>
+    </main>
+  </div>
 
   <script type="module">
-    import { createClient } from
-      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-    // ECION's existing Supabase project.
-    // The publishable key is designed for public client use.
-    // Never put a service_role or secret key in this file.
-    const SUPABASE_URL =
-      "https://nihnqhfgseifvncjxxej.supabase.co";
-
-    const SUPABASE_PUBLISHABLE_KEY =
-      "sb_publishable_22ZH3OKQ_C6tApeHx7vF-A_XHJeKoaE";
-
-    const db = createClient(
-      SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY
-    );
-
+    const SUPABASE_URL = "https://nihnqhfgseifvncjxxej.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_22ZH3OKQ_C6tApeHx7vF-A_XHJeKoaE";
+    const db = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
     const $ = id => document.getElementById(id);
-
-    const regions = {
-      us: "United States",
-      nl: "Netherlands",
-      de: "Germany",
-      uk: "United Kingdom"
-    };
-
+    const regions = { us: "United States", nl: "Netherlands", de: "Germany", uk: "United Kingdom" };
     let currentUser = null;
     let demoActive = false;
-    let loadingPreferences = false;
 
-    function message(text) {
-      $("message").textContent = text;
-    }
-
-    function preferenceMessage(text) {
-      $("preferenceStatus").textContent = text;
-    }
-
+    function message(text) { $("message").textContent = text; }
+    function preferenceMessage(text) { $("preferenceStatus").textContent = text; }
     function updateRegionLabel() {
-      $("serverName").textContent =
-        regions[$("server").value] || "Unknown";
+      const region = $("server").value;
+      $("serverName").textContent = regions[region] || "Unknown";
+      $("metricRegion").textContent = region.toUpperCase();
     }
-
     $("server").addEventListener("change", updateRegionLabel);
 
-    // This only changes the UI. It does not connect a VPN.
+    // UI demo only. No VPN tunnel is created.
     $("connectBtn").addEventListener("click", () => {
       demoActive = !demoActive;
-
       $("orb").classList.toggle("demo-active", demoActive);
       $("orb").textContent = demoActive ? "✓" : "🔒";
-
-      $("connectionTitle").textContent =
-        demoActive ? "Demo enabled" : "ECION VPN";
-
-      $("connectionDescription").textContent =
-        demoActive
-          ? "The dashboard demo is active."
-          : "Your dashboard is ready.";
-
-      $("connectBtn").textContent =
-        demoActive ? "Reset Demo" : "Start Demo";
-
-      $("statusText").textContent =
-        demoActive
-          ? "DEMO ONLY — no traffic protection"
-          : "VPN engine not connected";
-
-      $("statusDot").classList.remove("good");
+      $("connectionTitle").textContent = demoActive ? "Demo enabled" : "ECION is ready";
+      $("connectionDescription").textContent = demoActive ? "The dashboard preview is active." : "Your dashboard is ready to configure.";
+      $("connectBtn").textContent = demoActive ? "Reset dashboard demo ↺" : "Run dashboard demo ↗";
+      $("statusText").textContent = demoActive ? "DEMO ONLY — no traffic protection" : "VPN engine not connected";
+      $("statusDot").style.background = demoActive ? "#ffd27b" : "";
     });
 
     function setSignedIn(user) {
       currentUser = user;
-
-      $("authStatus").textContent = user
-        ? "Signed in: " + user.email
-        : "Not signed in";
-
-      $("accountStatus").textContent = user
-        ? "Signed in"
-        : "Not signed in";
-
+      $("authStatus").textContent = user ? "Signed in: " + user.email : "You're signed out. Sign in to sync preferences.";
+      $("metricAccount").textContent = user ? "Active" : "Guest";
+      $("accountStatus").textContent = user ? "Signed in" : "Not signed in";
+      $("accountStatus").className = "security-value " + (user ? "ok" : "pending");
       $("authForm").hidden = !!user;
       $("signOutBtn").hidden = !user;
-
       $("savePreferences").disabled = !user;
       $("server").disabled = !user;
       $("autoConnect").disabled = !user;
-
       if (!user) {
         $("savedStatus").textContent = "Not loaded";
+        $("savedStatus").className = "security-value";
         preferenceMessage("Sign in to save your preferences.");
       }
     }
 
     async function loadPreferences(user) {
       if (!user) return;
-
-      loadingPreferences = true;
-      preferenceMessage("Loading saved preferences...");
-
+      preferenceMessage("Loading saved preferences…");
       try {
-        const { data, error } = await db
-          .from("vpn_preferences")
-          .select("preferred_region, auto_connect")
-          .eq("user_id", user.id)
-          .maybeSingle();
-
+        const { data, error } = await db.from("vpn_preferences")
+          .select("preferred_region, auto_connect").eq("user_id", user.id).maybeSingle();
         if (error) throw error;
-
-        // No row yet is normal for a new user.
         if (data) {
           $("server").value = data.preferred_region;
           $("autoConnect").checked = data.auto_connect;
-          updateRegionLabel();
-
           $("savedStatus").textContent = "Loaded";
+          $("savedStatus").className = "security-value ok";
           preferenceMessage("Your saved preferences are loaded.");
         } else {
           $("server").value = "us";
           $("autoConnect").checked = false;
-          updateRegionLabel();
-
           $("savedStatus").textContent = "Not saved yet";
-          preferenceMessage(
-            "Choose your preferences, then select Save Preferences."
-          );
+          $("savedStatus").className = "security-value";
+          preferenceMessage("Choose your preferences, then save them.");
         }
+        updateRegionLabel();
       } catch (error) {
         $("savedStatus").textContent = "Load failed";
-        preferenceMessage(
-          "Could not load preferences: " + error.message
-        );
-      } finally {
-        loadingPreferences = false;
+        $("savedStatus").className = "security-value pending";
+        preferenceMessage("Could not load preferences: " + error.message);
       }
     }
 
     async function savePreferences() {
-      if (!currentUser) {
-        preferenceMessage("Sign in before saving preferences.");
-        return;
-      }
-
+      if (!currentUser) { preferenceMessage("Sign in before saving preferences."); return; }
       const region = $("server").value;
-
-      if (!Object.hasOwn(regions, region)) {
-        preferenceMessage("Choose a valid region.");
-        return;
-      }
-
+      if (!Object.hasOwn(regions, region)) { preferenceMessage("Choose a valid region."); return; }
       $("savePreferences").disabled = true;
-      preferenceMessage("Saving preferences...");
-
+      preferenceMessage("Saving preferences…");
       try {
-        const { error } = await db
-          .from("vpn_preferences")
-          .upsert({
-            user_id: currentUser.id,
-            preferred_region: region,
-            auto_connect: $("autoConnect").checked
-          }, {
-            onConflict: "user_id"
-          });
-
+        const { error } = await db.from("vpn_preferences").upsert({
+          user_id: currentUser.id,
+          preferred_region: region,
+          auto_connect: $("autoConnect").checked
+        }, { onConflict: "user_id" });
         if (error) throw error;
-
         $("savedStatus").textContent = "Saved";
+        $("savedStatus").className = "security-value ok";
         preferenceMessage("Preferences saved to Supabase!");
+        updateRegionLabel();
       } catch (error) {
         $("savedStatus").textContent = "Save failed";
-        preferenceMessage(
-          "Could not save preferences: " + error.message
-        );
+        $("savedStatus").className = "security-value pending";
+        preferenceMessage("Could not save preferences: " + error.message);
       } finally {
         $("savePreferences").disabled = !currentUser;
       }
     }
-
-    $("savePreferences").addEventListener(
-      "click", savePreferences
-    );
+    $("savePreferences").addEventListener("click", savePreferences);
 
     $("signUpBtn").addEventListener("click", async () => {
       const email = $("email").value.trim();
       const password = $("password").value;
-
-      if (!email || password.length < 8) {
-        message("Enter your email and a password with at least 8 characters.");
-        return;
-      }
-
+      if (!email || password.length < 8) { message("Enter your email and a password with at least 8 characters."); return; }
       $("signUpBtn").disabled = true;
-      message("Creating your account...");
-
+      message("Creating your account…");
       try {
-        const { data, error } = await db.auth.signUp({
-          email,
-          password
-        });
-
+        const { data, error } = await db.auth.signUp({ email, password });
         if (error) throw error;
-
         if (data.session && data.user) {
           setSignedIn(data.user);
           await loadPreferences(data.user);
-          message("Your account was created and you're signed in.");
+          message("Account created and signed in.");
         } else {
-          message(
-            "Sign-up submitted. Check your email for a confirmation link. " +
-            "After confirming, sign in here."
-          );
+          message("Sign-up submitted. Check your email for a confirmation link, then sign in.");
         }
-      } catch (error) {
-        message("Sign-up failed: " + error.message);
-      } finally {
-        $("signUpBtn").disabled = false;
-      }
+      } catch (error) { message("Sign-up failed: " + error.message); }
+      finally { $("signUpBtn").disabled = false; }
     });
 
     $("signInBtn").addEventListener("click", async () => {
       const email = $("email").value.trim();
       const password = $("password").value;
-
-      if (!email || !password) {
-        message("Enter your email and password.");
-        return;
-      }
-
+      if (!email || !password) { message("Enter your email and password."); return; }
       $("signInBtn").disabled = true;
-      message("Signing in...");
-
+      message("Signing in…");
       try {
-        const { data, error } = await db.auth.signInWithPassword({
-          email,
-          password
-        });
-
+        const { data, error } = await db.auth.signInWithPassword({ email, password });
         if (error) throw error;
-
         setSignedIn(data.user);
         await loadPreferences(data.user);
         message("Signed in successfully.");
-      } catch (error) {
-        message("Sign-in failed: " + error.message);
-      } finally {
-        $("signInBtn").disabled = false;
-      }
+      } catch (error) { message("Sign-in failed: " + error.message); }
+      finally { $("signInBtn").disabled = false; }
     });
 
     $("signOutBtn").addEventListener("click", async () => {
       $("signOutBtn").disabled = true;
-
       try {
         const { error } = await db.auth.signOut();
         if (error) throw error;
-
         setSignedIn(null);
         message("You have signed out.");
-      } catch (error) {
-        message("Sign-out failed: " + error.message);
-      } finally {
-        $("signOutBtn").disabled = false;
-      }
+      } catch (error) { message("Sign-out failed: " + error.message); }
+      finally { $("signOutBtn").disabled = false; }
     });
 
-    // Initialize the existing Supabase session.
     setSignedIn(null);
-
     try {
       const { data, error } = await db.auth.getSession();
       if (error) throw error;
-
       if (data.session?.user) {
         setSignedIn(data.session.user);
         await loadPreferences(data.session.user);
       } else {
         setSignedIn(null);
       }
-
       db.auth.onAuthStateChange((event, session) => {
-        // Defer additional Supabase work until after the auth callback.
         setTimeout(async () => {
-          if (event === "SIGNED_OUT") {
-            setSignedIn(null);
-          } else if (session?.user) {
+          if (event === "SIGNED_OUT") setSignedIn(null);
+          else if (session?.user) {
             setSignedIn(session.user);
             await loadPreferences(session.user);
           }
         }, 0);
       });
     } catch (error) {
-      $("authStatus").textContent =
-        "Could not initialize Supabase.";
+      $("authStatus").textContent = "Could not initialize Supabase.";
       $("accountStatus").textContent = "Connection error";
       message(error.message);
     }
+    updateRegionLabel();
   </script>
 </body>
 </html>
